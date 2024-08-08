@@ -1,0 +1,40 @@
+# https://github.com/ardera/flutter-pi/tree/master
+# I use raspberry Raspberry Pi OS (32-bit) with desktop
+
+wget https://downloads.raspberrypi.org/raspios_armhf_latest
+and install on rpi
+
+>>>>>>>>>>>>>>>>>>>>>>>>
+ON RASPBERRY PI 4
+raspi-config -> Boot Options -> Desktop / CLI
+- select Console (Autologin)
+
+raspi-config -> Advanced Options -> GL Driver
+- select GL Fake-KMS
+
+raspi-config -> Advanced Options -> Memory Split
+- set 16MB
+
+sudo usermod -a -G render pi
+
+sudo apt install libgl1-mesa-dev libgles2-mesa-dev libegl-mesa0 libdrm-dev libgbm-dev
+
+sudo apt install x11proto-dev
+
+sudo apt install ttf-mscorefonts-installer fontconfig
+sudo fc-cache
+
+sudo apt-get install gpiod libgpiod-dev libsystemd-dev libinput-dev libudev-dev
+
+>>>>>>>>>>>>>>>>>>>>>>>>
+ON HOST
+rsync -a --info=progress2 ubuntu@192.168.0.38:/usr
+rsync -a --info=progress2 ubuntu@192.168.0.38:/lib $PWD/sdk/sysroot/
+rsync -a --info=progress2 ubuntu@192.168.0.38:/usr/include $PWD/sdk/sysroot/usr/
+rsync -a --info=progress2 ubuntu@192.168.0.38:/usr/lib $PWD/sdk/sysroot/usr/
+rsync -a --info=progress2 ubuntu@192.168.0.38:/usr/share $PWD/sdk/sysroot/usr/
+rsync -a --info=progress2 ubuntu@192.168.0.38:/opt/vc $PWD/sdk/sysroot/opt/
+
+wget https://raw.githubusercontent.com/riscv/riscv-poky/master/scripts/sysroot-relativelinks.py
+sudo chmod +x sysroot-relativelinks.py
+./sysroot-relativelinks.py src/sysroot
